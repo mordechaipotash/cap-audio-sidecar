@@ -10,7 +10,9 @@ If your Cap recordings have any of:
 
 …this records audio outside Cap using Apple's `AVAudioRecorder` (the same API MacWhisper and Voice Memos use, which doesn't hit the bug), then patches it into Cap's `.cap` bundle before you export. cap.so upload and share work normally. You keep using Cap exactly as before.
 
-> **Status:** This will be archived once Cap **v0.4.85** ships with [PR #1866](https://github.com/CapSoftware/Cap/pull/1866) and the upstream fixes propagate. Huge thanks to [@richiemcilroy](https://github.com/richiemcilroy) for the work already in flight. This is a stopgap, not a replacement.
+> **First, try updating Cap.** v0.4.84 is the latest GitHub release, but Cap also auto-updates through Crabnebula's CDN — v0.4.85, v0.4.86, v0.4.87 have all shipped via that channel, and **v0.5 is rolling out now**. The mic-lifecycle bug is fixed in [PR #1866 by @ManthanNimodiya](https://github.com/CapSoftware/Cap/pull/1866) (merged 2026-05-26, included in 0.4.85+). If you have a recent Cap build, your problem may already be solved. This sidecar is for users still stuck on the GitHub-downloaded 0.4.84 binary without auto-update.
+>
+> **Status:** This will be archived once Cap **v0.5** is widely deployed and the muxer-67 finalize bug is confirmed fixed for everyone. Huge thanks to [@ManthanNimodiya](https://github.com/ManthanNimodiya) for the upstream PR and [@richiemcilroy](https://github.com/richiemcilroy) and the Cap team for the open source, the fast reviews, and the active 0.5 work.
 >
 > **Scope:** macOS only. Cap Studio mode only (Instant mode streams audio segments live to cap.so before we can patch). Tested on Cap v0.4.84.
 
@@ -132,7 +134,8 @@ See [`docs/architecture.md`](docs/architecture.md) for the full debugging story 
 
 ## Acknowledgements
 
-- [@richiemcilroy](https://github.com/richiemcilroy) and the [Cap team](https://github.com/CapSoftware/Cap) for the open-source recorder and active maintenance.
+- [@ManthanNimodiya](https://github.com/ManthanNimodiya) for [PR #1866](https://github.com/CapSoftware/Cap/pull/1866) — the actual upstream fix for the mic-restore-after-recording lifecycle bug.
+- [@richiemcilroy](https://github.com/richiemcilroy) and the [Cap team](https://github.com/CapSoftware/Cap) for the open-source recorder, fast PR reviews, and ongoing 0.5 work.
 - The commenters in [#1740](https://github.com/CapSoftware/Cap/issues/1740) — @aspectrr, @electerious, @tembo, @Kat-May-Kat, @schuon, and others — whose symptom reports made the bug reproducible.
 
 ## License
