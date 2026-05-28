@@ -1,0 +1,5 @@
+src/cap_audio_rec_swift
+*.dSYM
+__pycache__/
+*.pyc
+.DS_Store
