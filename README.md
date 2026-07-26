@@ -1,5 +1,40 @@
 # cap-audio-sidecar
 
+> # ⚠️ RETIRED — 2026-07-26
+>
+> **Do not install this. Update Cap instead.**
+>
+> This repo existed to route around audio bugs in Cap v0.4.84. Those bugs are fixed
+> upstream. [PR #1866 by @ManthanNimodiya](https://github.com/CapSoftware/Cap/pull/1866)
+> (merged 2026-05-26, shipped in 0.4.85+) fixed the mic-lifecycle race, and Cap 0.5
+> fixed the rest. **The sidecar is now not just unnecessary — it is harmful**, because it
+> opens a second mic client alongside Cap's own working capture, which is the exact
+> multi-client contamination described in [Why `AVAudioRecorder` and not `ffmpeg`](#why-avaudiorecorder-and-not-ffmpeg).
+>
+> Measured on Cap **0.5.6** (2026-07-26): Cap writes both `audio-input.ogg` and
+> `system_audio.ogg` into the bundle itself. The daemon confirms this on every recording
+> and refuses to act —
+> `skip reason=cap_already_has_audio (audio-input.ogg)` — while still recording a
+> throwaway shadow track first. Two months of that cost 2.3 GB of orphan `.m4a`.
+>
+> **If you installed the daemon, remove it:**
+> ```bash
+> launchctl bootout "gui/$(id -u)/com.cap-sidecar.daemon"
+> rm -f ~/Library/LaunchAgents/com.cap-sidecar.daemon.plist
+> # then re-enable Mic + System Audio in Cap → Settings → Recording
+> ```
+> Check `~/.cap-sidecar/auto/` for orphaned shadow recordings before deleting the directory.
+>
+> Everything below is kept as a record of the debugging, not as instructions.
+> The write-up in [`docs/architecture.md`](docs/architecture.md) — three stacked bugs biting
+> at once — is the part still worth reading.
+>
+> Thanks to [@ManthanNimodiya](https://github.com/ManthanNimodiya),
+> [@richiemcilroy](https://github.com/richiemcilroy), and the
+> [Cap team](https://github.com/CapSoftware/Cap) for fixing it properly upstream.
+
+---
+
 **A stopgap for the audio bugs in [Cap](https://cap.so) v0.4.84** ([GitHub #1740](https://github.com/CapSoftware/Cap/issues/1740)).
 
 If your Cap recordings have any of:
@@ -12,7 +47,7 @@ If your Cap recordings have any of:
 
 > **First, try updating Cap.** v0.4.84 is the latest GitHub release, but Cap also auto-updates through Crabnebula's CDN — v0.4.85, v0.4.86, v0.4.87 have all shipped via that channel, and **v0.5 is rolling out now**. The mic-lifecycle bug is fixed in [PR #1866 by @ManthanNimodiya](https://github.com/CapSoftware/Cap/pull/1866) (merged 2026-05-26, included in 0.4.85+). If you have a recent Cap build, your problem may already be solved. This sidecar is for users still stuck on the GitHub-downloaded 0.4.84 binary without auto-update.
 >
-> **Status:** This will be archived once Cap **v0.5** is widely deployed and the muxer-67 finalize bug is confirmed fixed for everyone. Huge thanks to [@ManthanNimodiya](https://github.com/ManthanNimodiya) for the upstream PR and [@richiemcilroy](https://github.com/richiemcilroy) and the Cap team for the open source, the fast reviews, and the active 0.5 work.
+> **Status: ARCHIVED 2026-07-26** — the condition below was met. Cap 0.5 shipped, the muxer-67 finalize bug is fixed, and this repo is read-only. *(Original text: This will be archived once Cap **v0.5** is widely deployed and the muxer-67 finalize bug is confirmed fixed for everyone.)* Huge thanks to [@ManthanNimodiya](https://github.com/ManthanNimodiya) for the upstream PR and [@richiemcilroy](https://github.com/richiemcilroy) and the Cap team for the open source, the fast reviews, and the active 0.5 work.
 >
 > **Scope:** macOS only. Cap Studio mode only (Instant mode streams audio segments live to cap.so before we can patch). Tested on Cap v0.4.84.
 
